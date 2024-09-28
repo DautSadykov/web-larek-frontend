@@ -1,16 +1,16 @@
 // составляется на основе хранимых данных
 export interface IProduct {
-	_id: string;
-	title: string;
+	id: string;
 	description: string;
 	image: string;
+	title: string;
 	category: string;
 	price: number;
-	inBasket: boolean;
+	inBasket?: boolean;
 }
 
 export interface IOrder {
-	items: Pick<IProduct, '_id'>[];
+	items: Pick<IProduct, 'id'>[];
 	payment: string;
 	address: string;
 	email: string;
@@ -28,20 +28,17 @@ export interface IProductsData {
 }
 
 export interface IOrderData {
-	items: Pick<IOrder, 'items'>;
-	payment: Pick<IOrder, 'payment'>;
-	email: Pick<IOrder, 'email'>;
-	phone: Pick<IOrder, 'phone'>;
-	address: Pick<IOrder, 'address'>;
-	total: Pick<IOrder, 'total'>;
 	placeOrder(
+		items: Pick<IOrder, 'items'>,
 		payment: string,
 		email: string,
 		phone: string,
 		address: string,
 		total: number,
-		items: Pick<IOrder, 'items'>
 	): void;
+	checkOrderValidation(data: Record<keyof TOrderModal, string>): boolean;
+	checkContactValidaton(data: Record<keyof TContactModal, string>): boolean;
+	setOrderInfo(order: IOrder): void;
 }
 
 // составляется на основе страниц

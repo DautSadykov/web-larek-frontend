@@ -140,7 +140,7 @@ export type TFinishModal = Pick<IOrder, "totalSum">;
 
 ### Слой данных
 
-#### Класс ProductsData
+#### Класс ProductData
 Класс отвечает за хранение и логику работы с данными продуктов\
 Конструктор класса принимает инстант брокера событий\
 В полях класса хранятся следующие данные:
@@ -174,6 +174,9 @@ export type TFinishModal = Pick<IOrder, "totalSum">;
 		total: number,
 		items: Pick<IOrder, 'items'>
 	): void - направляет оформленный клиентом заказ на сервер
+- 	checkOrderValidation(data: Record<keyof TOrderModal, string>): boolean;
+-  	checkContactValidaton(data: Record<keyof TContactModal, string>): boolean;
+
 
 
 ### Классы представления
@@ -273,6 +276,9 @@ export type TFinishModal = Pick<IOrder, "totalSum">;
 - `products:selected` - изменение открываемого в модальном окне продукта
 - `product:previewClear` - необходима очистка данных выбранной для показа в модальном окне продукта
 - `product:toggleInBasket` - добавить или убрать продукт из корзины
+- `order:placed` - оформление заказа
+- `order:changed` - изменение данных заказа
+
 
 *События, возникающие при взаимодействии пользователя с интерфейсом (генерируются классами, отвечающими за представление)*
 - `product:open` - открытие модального окна с информацией о продукте
