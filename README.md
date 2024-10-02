@@ -145,7 +145,7 @@ export type TFinishModal = Pick<IOrder, "totalSum">;
 Конструктор класса принимает инстант брокера событий\
 В полях класса хранятся следующие данные:
 - _products: IProduct[] - массив объектов продуктов
-- _preview: string | null - id карточки, выбранной для просмотра в модальной окне
+- _preview: string | null - id карточки, выбранной для просмотра в модальном окне
 - events: IEvents - экземпляр класса `EventEmitter` для инициации событий при изменении данных.
 
 Так же класс предоставляет набор методов для взаимодействия с этими данными.
@@ -153,6 +153,17 @@ export type TFinishModal = Pick<IOrder, "totalSum">;
 - addProductToBasket(productId: string): void - добавляет продукт в корзину
 - removeProductFromBasket(productId: string): void - удаляет продукт из корзины
 - а так-же сеттеры и геттеры для сохранения и получения данных из полей класса
+
+#### Класс BasketData
+Класс отвечает за хранение и логику работы с данными корзины товаров\
+Конструктор класса принимает инстант брокера событий\
+В полях класса хранятся следующие данные:
+- products: string - массив объектов продуктов
+
+Так же класс предоставляет набор методов для взаимодействия с этими данными.
+- addProductToBasket(productId: string): void - добавляет id продукта в массив товаров корзины
+- removeProductFromBasket(productId: string): void - удаляет id продукта из корзины
+- clearBasket(): void - очищает массив корзины с товарами
 
 #### Класс OrderData
 Класс отвечает за хранение и логику работы с данными заказа.\
@@ -275,7 +286,7 @@ export type TFinishModal = Pick<IOrder, "totalSum">;
 - `products:changed` - изменение массива товаров
 - `products:selected` - изменение открываемого в модальном окне продукта
 - `product:previewClear` - необходима очистка данных выбранной для показа в модальном окне продукта
-- `product:toggleInBasket` - добавить или убрать продукт из корзины
+- `basket:changed` - изменение массива корзины
 - `order:placed` - оформление заказа
 - `order:changed` - изменение данных заказа
 
@@ -294,6 +305,7 @@ export type TFinishModal = Pick<IOrder, "totalSum">;
 - `form-order:submit` - сохранение метода оплаты и адреса доставки в форме оформления заказа
 - `form-contacts:submit` - сохранение email и номера телефона в форме ввода контактных данных
 - `continuePurchase:close` - закрыте модального окна завершения заказа
+ 
 
 
 
