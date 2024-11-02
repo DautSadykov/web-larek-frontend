@@ -22,9 +22,9 @@ const events = new EventEmitter();
 const api = new LarekAPI(CDN_URL, API_URL);
 
 // Чтобы мониторить все события, для отладки
-// events.onAll(({ eventName, data }) => {
-//     console.log(eventName, data);
-// })
+events.onAll(({ eventName, data }) => {
+    console.log(eventName);
+})
 
 // Все шаблоны
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');

@@ -1,7 +1,6 @@
 // import _ from "lodash";
 import {Model} from "./base/Model";
 import {FormErrors, IAppState, IContactForm, IOrder, IOrderForm, IProduct} from "../types";
-import { ConcatenationScope } from "webpack";
 
 export type CatalogChangeEvent = {
     catalog: ProductItem[]
@@ -19,7 +18,6 @@ export class ProductItem extends Model<IProduct> {
 
 export class AppState extends Model<IAppState> {
     catalog: ProductItem[];
-    loading: boolean;
     order: IOrder = {
         email: '',
         address: '',
@@ -42,11 +40,7 @@ export class AppState extends Model<IAppState> {
         })
         this.emitChanges('basket:changed', {basket: this.basketList})
     }
-
-    checkProductInBasket(id: string) {
-        return this.catalog.find(item => item.id === id).inBasket
-    }
-
+    
     get basketList() {
         return this.catalog
         .filter(item => item.inBasket === true)

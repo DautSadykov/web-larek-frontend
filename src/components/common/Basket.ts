@@ -5,7 +5,6 @@ import {EventEmitter} from "../base/events";
 interface IBasketView {
     items: HTMLElement[];
     total: number;
-    // selected: string[];
 }
 
 export class Basket extends Component<IBasketView> {
