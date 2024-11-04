@@ -45,6 +45,9 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 const order = new Order(cloneTemplate(orderTemplate), events);
 const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
+const success = new Success(cloneTemplate(successTemplate), {
+	onClick: () => events.emit('success:close'),
+})
 
 api
 	.getProductList()
@@ -102,7 +105,7 @@ events.on('preview:changed', (item: ProductItem) => {
 		}),
 	});
 	card.disablePriceless()
-	if (item.inBasket) {
+	if (appData.getOrder().items.includes(item.id)) {
 		card.disableIfInBasket()
 	}
 });
@@ -112,7 +115,7 @@ events.on('basket:toggleProduct', (item: ProductItem) => {
 });
 
 events.on('basket:changed', () => {
-	basket.items = appData.basketList.map((item) => {
+	basket.items = appData.getBasketList().map((item) => {
 		const card = new CardBasket(cloneTemplate(cardBasketTemplate), {
 			onClick: () => events.emit('basket:toggleProduct', item),
 		});
@@ -121,17 +124,16 @@ events.on('basket:changed', () => {
 			price: item.price,
 		});
 	});
-	page.counter = appData.basketList.length;
-	basket.total = appData.getTotal();
-	appData.setOrderData();
-	basket.selected = appData.basketList.length
+	page.counter = appData.getBasketList().length;
+	basket.total = appData.total;
+	basket.selected = appData.getBasketList().length;
 });
 
 events.on('order:open', () => {
 	modal.render({
 		content: order.render({
-			address: '',
-			valid: false,
+			address: appData.order.address,
+			valid: appData.validateOrder(),
 			errors: [],
 		}),
 	});
@@ -155,9 +157,9 @@ events.on(
 events.on('order:submit', () => {
 	modal.render({
 		content: contacts.render({
-			phone: '',
-			email: '',
-			valid: false,
+			phone: appData.order.phone,
+			email: appData.order.email,
+			valid: appData.validateContacts(),
 			errors: [],
 		}),
 	});
@@ -174,13 +176,11 @@ events.on('contacts:submit', () => {
     api.orderProducts(appData.getOrder())
         .then(result => {
             modal.render({
-                content: new Success(cloneTemplate(successTemplate), {
-                    onClick: () => events.emit('success:close'),
-                }).render({
+                content: success.render({
                     total: result.total,
                 }),
             });
-            appData.clearBasket();
+            appData.clearOrder();
         })
         .catch(err => {
             console.error(err);

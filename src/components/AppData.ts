@@ -13,7 +13,6 @@ export class ProductItem extends Model<IProduct> {
     title: string;
     price: number;
     category: string;
-    inBasket: boolean = false;
 }
 
 export class AppState extends Model<IAppState> {
@@ -30,30 +29,32 @@ export class AppState extends Model<IAppState> {
     formErrors: FormErrors = {};
 
     toggleProductInBasket(id: string) {
-        this.catalog.find(item => item.id === id).inBasket = !this.catalog.find(item => item.id === id).inBasket
-        this.emitChanges('basket:changed', {basket: this.basketList})
+        if (this.order.items.includes(id)) {
+            this.order.items = this.order.items.filter(el => el !== id)
+        } else {
+            this.order.items = [...this.order.items, id]
+        }
+        this.order.total = this.getTotal()
+        this.emitChanges('basket:changed', {id})
     }
     
-    clearBasket() {
-        this.catalog.forEach((item) => {
-            item.inBasket = false
-        })
-        this.emitChanges('basket:changed', {basket: this.basketList})
+    clearOrder() {
+        this.order.items = []
+        this.order.email = ''
+        this.order.address = ''
+        this.order.payment = 'online'
+        this.order.phone = ''
+        this.order.total = 0
+        this.emitChanges('basket:changed')
     }
     
-    get basketList() {
+    getBasketList() {
         return this.catalog
-        .filter(item => item.inBasket === true)
+        .filter(item => this.order.items.includes(item.id))
     }
 
     set payment(value: string) {
         this.order.payment = value
-    }
-
-    setOrderData() {
-        const orderItems = this.catalog.filter((item) => item.inBasket == true)
-        this.order.items = orderItems.map(item => item.id)
-        this.order.total = this.getTotal()
     }
 
     getOrder() {
@@ -61,8 +62,12 @@ export class AppState extends Model<IAppState> {
     }
 
     getTotal() {
-        const productsInBasket = this.catalog.filter((item) => item.inBasket == true)
+        const productsInBasket = this.catalog.filter((item) => this.order.items.includes(item.id))
         return productsInBasket.reduce((acc, curr) => acc + curr.price, 0)
+    }
+
+    get total() {
+        return this.order.total
     }
 
     setCatalog(items: IProduct[]) {
